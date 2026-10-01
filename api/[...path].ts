@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { createApp } from "../server/app.ts";
 
 type AppHandler = (req: IncomingMessage, res: ServerResponse) => Promise<void>;
 let appPromise: Promise<AppHandler> | undefined;
@@ -7,13 +8,13 @@ export const config = { api: { bodyParser: false } };
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
-    appPromise ??= import("../server/app").then(({ createApp }) => createApp({
+    appPromise ??= createApp({
         dataDir: "/tmp/box-builder",
         adminPassword: process.env.ADMIN_PASSWORD,
         webhookUrl: process.env.QUOTE_WEBHOOK_URL,
         publicUrl: process.env.PUBLIC_URL,
         log: (message) => console.log(`[box-builder] ${message}`),
-      }));
+      });
     const app = await appPromise;
     await app(req, res);
   } catch (error) {
