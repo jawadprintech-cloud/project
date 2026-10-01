@@ -1,0 +1,54 @@
+body { overflow: auto; }
+.admin { min-height: 100%; display: flex; flex-direction: column; }
+.admin .topbar { position: sticky; top: 0; }
+.admin-body { display: grid; grid-template-columns: 240px 1fr; flex: 1; }
+.admin-nav { background: #fff; border-right: 1px solid var(--line); padding: 14px 10px; display: flex; flex-direction: column; gap: 4px; }
+.admin-nav button { text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 9px 12px; font-weight: 600; color: #475467; }
+.admin-nav button.on { background: var(--brand-soft); color: var(--brand); }
+.admin-main { padding: 20px 28px 100px; min-width: 0; }
+.admin-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.admin-title h1 { font-size: 22px; margin: 0; display: flex; align-items: center; gap: 10px; }
+.login-card { background: #fff; padding: 24px; border-radius: 16px; box-shadow: var(--shadow); width: min(360px, 100%); text-align: left; }
+.table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; font-size: 13.5px; }
+.table th { background: #f9fafb; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.table tbody tr { cursor: pointer; }
+.table tbody tr:hover { background: #fcfcfd; }
+.table.compact td, .table.compact th { padding: 6px 8px; }
+.table.compact tbody tr { cursor: default; }
+.q-thumb { width: 56px; height: 42px; object-fit: cover; border-radius: 6px; background: #eef0f4; }
+.status { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 99px; background: #f2f4f7; text-transform: capitalize; }
+.s-new { background: #fff1e8; color: #c2410c; }
+.s-in-review { background: #eef4ff; color: #1d4ed8; }
+.s-quoted { background: #f4f3ff; color: #5925dc; }
+.s-won { background: #ecfdf3; color: #067647; }
+.s-lost, .s-archived { background: #f2f4f7; color: #667085; }
+.mockups { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 12px 0 18px; }
+.mockups img { width: 100%; border-radius: 12px; background: #e9ecf1; display: block; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.card { background: #fff; border-radius: 12px; box-shadow: var(--shadow); padding: 16px 18px; min-width: 0; }
+.card h3:first-child { margin-top: 0; }
+.notes { white-space: pre-wrap; background: #f9fafb; border-radius: 8px; padding: 10px; }
+.files { padding-left: 18px; }
+.proof { width: 100%; margin-top: 12px; border-radius: 8px; border: 1px solid var(--line); }
+.list-editor { display: grid; gap: 10px; margin-top: 12px; }
+.le-card { background: #fff; border-radius: 12px; box-shadow: var(--shadow); padding: 12px 16px; margin-bottom: 10px; }
+.le-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.le-head .btn-row { margin: 0; }
+.le-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 16px; }
+.le-fields .full { grid-column: 1 / -1; }
+.save-bar { position: fixed; bottom: 0; left: 240px; right: 0; display: flex; align-items: center; gap: 10px; justify-content: flex-end; padding: 12px 28px; background: #fff; border-top: 1px solid var(--line); z-index: 5; }
+.save-bar span { margin-right: auto; color: var(--muted); }
+.save-bar.dirty span { color: #b54708; font-weight: 600; }
+.tpl-editor { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 16px; }
+.tpl-editor textarea { font-size: 12px; line-height: 1.45; min-height: 520px; }
+.tpl-preview { width: 100%; max-height: 520px; background: #fff; border-radius: 12px; border: 1px solid var(--line); }
+code { background: #f2f4f7; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+@media (max-width: 900px) {
+  .admin-body { grid-template-columns: 1fr; }
+  .admin-nav { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+  .admin-nav button { white-space: nowrap; }
+  .detail-grid, .tpl-editor { grid-template-columns: 1fr; }
+  .save-bar { left: 0; }
+  .admin-main { padding: 16px 14px 100px; }
+}
