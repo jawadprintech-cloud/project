@@ -315,7 +315,44 @@ export async function createApp(opts: AppOptions) {
       "Content-Security-Policy": "default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox",
       "Content-Disposition": `${download ? "attachment" : "inline"}; filename="${meta.fileName.replace(/"/g, "")}"`,
     });
-    createReadStream(store.assetPath(id)).pipe(res);
+    const stream = await store.assetStream(id);
+    if (!stream) throw new HttpError(404, "Not found.");
+    stream.pipe(res);
+  });
+
+  route("POST", "/api/assets/register", async (req, res) => {
+    limit(req, "upload", 400, 10 * 60_000);
+    const body = (await readJsonBody(req, 100_000)) as {
+      id?: string;
+      pathname?: string;
+      fileName?: string;
+      kind?: string;
+      mime?: string;
+    };
+    const { id, pathname } = body;
+    if (!id || !/^[a-f0-9]{32}$/.test(id) || pathname !== `assets/${id}`) throw new HttpError(400, "Invalid file reference.");
+    if (body.kind !== "upload" && body.kind !== "generated") throw new HttpError(400, "Invalid file kind.");
+    const blob = await store.inspectBlob(pathname);
+    if (!blob) throw new HttpError(404, "Uploaded file not found.");
+    const cat = await catalog();
+    const max = body.kind === "generated" ? 150_000_000 : cat.settings.maxUploadMb * 1_000_000;
+    if (blob.size > max) throw new HttpError(413, `File too large (max ${Math.round(max / 1e6)} MB).`);
+
+    let mime = MIME_ALIASES[String(body.mime ?? "").toLowerCase()] ?? String(body.mime ?? "").toLowerCase();
+    if (body.kind === "upload") {
+      const signature = IMAGE_SIGNATURES.find((item) => item.test(blob.prefix));
+      if (!signature) throw new HttpError(415, "Unsupported artwork file.");
+      mime = signature.mime;
+    } else if (!GENERATED_TYPES.has(mime)) {
+      throw new HttpError(415, "Unsupported generated file type.");
+    } else if (mime.startsWith("image/") && mime !== "image/svg+xml" && !IMAGE_SIGNATURES.some((item) => item.mime === mime && item.test(blob.prefix))) {
+      throw new HttpError(415, "File content does not match its type.");
+    }
+
+    const fileName = String(body.fileName ?? "file").replace(/[^\w.\- ()]+/g, "_").slice(0, 120) || "file";
+    const meta: AssetMeta = { id, mime, size: blob.size, fileName, kind: body.kind, createdAt: new Date().toISOString() };
+    await store.registerBlobAsset(id, pathname, meta);
+    send(res, 201, { id, url: `/api/assets/${id}`, mime, size: blob.size });
   });
 
   route("POST", "/api/projects", async (req, res) => {
