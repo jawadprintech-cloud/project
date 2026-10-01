@@ -1,5 +1,6 @@
 node_modules/
 dist/
+server/app.runtime.mjs
 data/
 test-results/
 *.log
