@@ -56,9 +56,13 @@ npm run build
 ADMIN_PASSWORD='choose-a-strong-one' PORT=8080 npm start   # Windows PowerShell: $env:ADMIN_PASSWORD='…'; npm start    # serves the app, /admin and /api
 ```
 
-### Deploying a preview to Vercel
+### Deploying to Vercel
 
-Import the repository in Vercel and deploy with the default project settings. `vercel.json` builds the static browser demo: designs and uploads stay in the visitor's browser, and quote submission is simulated. This preview does not run the Node API or provide the production admin panel. For production use, deploy the API with persistent storage and point the frontend at it.
+`vercel.json` builds the React app and deploys the API routes as Vercel Functions. On Vercel, the storage adapter uses Neon Postgres for projects, quotes, catalog settings and metadata, and private Vercel Blob for artwork and generated files. The local development server continues to use `DATA_DIR` on disk.
+
+Connect a Neon database and a private Blob store to the Vercel project for both Production and Preview. Set `ADMIN_PASSWORD` in Vercel Environment Variables to enable `/admin`; the API remains available for customer designs and quote requests without it, but team review is disabled. Optional `QUOTE_WEBHOOK_URL` and `PUBLIC_URL` settings work as described below.
+
+The Vercel Hobby plan includes 0.5 GB per Neon database project and Blob allowances of 1 GB average storage, 10 GB data transfer, 10,000 simple operations and 2,000 advanced operations. Hobby does not bill overages; storage operations stop when an allowance is exceeded until the next period.
 
 | Env var | Purpose |
 | --- | --- |

@@ -15,5 +15,5 @@
     "noUnusedParameters": true,
     "types": ["node", "vite/client"]
   },
-  "include": ["src", "shared", "server", "tests", "vite.config.ts"]
+  "include": ["api", "src", "shared", "server", "tests", "vite.config.ts"]
 }
