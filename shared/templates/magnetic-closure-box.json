@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "id": "magnetic-closure-box",
+  "name": "Magnetic Closure Box",
+  "description": "Rigid presentation box: a tray plus a one-piece wrap cover with a magnetic front flap. Two separate dielines (tray and cover wrap).",
+  "dimensions": [
+    { "key": "L", "label": "Length", "min": 50, "max": 500, "default": 220 },
+    { "key": "W", "label": "Width", "min": 40, "max": 400, "default": 160 },
+    { "key": "H", "label": "Height", "min": 20, "max": 250, "default": 80 }
+  ],
+  "constraints": [
+    { "expr": "H <= W * 1.5", "message": "Height should not exceed 1.5 × the width for a magnetic box." }
+  ],
+  "vars": {
+    "c": 2,
+    "tab": "min(15, W * 0.3, H * 0.6)"
+  },
+  "pieces": [
+    { "id": "tray", "label": "Tray", "root": "tray-front" },
+    {
+      "id": "cover",
+      "label": "Cover Wrap",
+      "root": "cover-spine",
+      "place": { "position": ["L + c", "c", "-W - c"], "rotation": [0, 180, 0] }
+    }
+  ],
+  "panels": [
+    { "id": "tray-front", "label": "Tray Front", "w": "L", "h": "H" },
+    { "id": "tray-bottom", "label": "Tray Bottom", "parent": "tray-front", "edge": "bottom", "depth": "W" },
+    { "id": "tray-back", "label": "Tray Back", "parent": "tray-bottom", "edge": "bottom", "depth": "H" },
+    { "id": "tray-left", "label": "Left Side", "face": "left", "parent": "tray-bottom", "edge": "left", "depth": "H" },
+    { "id": "tray-right", "label": "Right Side", "face": "right", "parent": "tray-bottom", "edge": "right", "depth": "H" },
+    { "id": "tab-fl", "label": "Corner Tab", "kind": "glue", "parent": "tray-front", "edge": "left", "depth": "tab", "shape": { "inset": [2, "tab * 0.4"] }, "layer": 1 },
+    { "id": "tab-fr", "label": "Corner Tab", "kind": "glue", "parent": "tray-front", "edge": "right", "depth": "tab", "shape": { "inset": [2, "tab * 0.4"] }, "layer": 1 },
+    { "id": "tab-bl", "label": "Corner Tab", "kind": "glue", "parent": "tray-back", "edge": "left", "depth": "tab", "shape": { "inset": ["tab * 0.4", 2] }, "layer": 1 },
+    { "id": "tab-br", "label": "Corner Tab", "kind": "glue", "parent": "tray-back", "edge": "right", "depth": "tab", "shape": { "inset": ["tab * 0.4", 2] }, "layer": 1 },
+    { "id": "cover-spine", "label": "Back (Spine)", "face": "back", "w": "L + 2 * c", "h": "H + 2 * c" },
+    { "id": "cover-lid", "label": "Lid (Top)", "face": "top", "parent": "cover-spine", "edge": "top", "depth": "W + 2 * c", "openFold": -15 },
+    { "id": "cover-flap", "label": "Front Flap", "face": "front", "parent": "cover-lid", "edge": "top", "depth": "H + 2 * c", "openFold": 35 },
+    { "id": "cover-base", "label": "Bottom", "face": "bottom", "parent": "cover-spine", "edge": "bottom", "depth": "W + 2 * c" }
+  ],
+  "standardSizes": [
+    { "id": "mag-s", "label": "Small – 150 × 120 × 50 mm", "dims": { "L": 150, "W": 120, "H": 50 } },
+    { "id": "mag-m", "label": "Medium – 220 × 160 × 80 mm", "dims": { "L": 220, "W": 160, "H": 80 } },
+    { "id": "mag-l", "label": "Large – 300 × 220 × 100 mm", "dims": { "L": 300, "W": 220, "H": 100 } },
+    { "id": "mag-wine", "label": "Wine – 110 × 110 × 350 mm", "dims": { "L": 350, "W": 110, "H": 110 } }
+  ]
+}

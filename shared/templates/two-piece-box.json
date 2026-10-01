@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "id": "two-piece-box",
+  "name": "Two-Piece Box",
+  "description": "Base tray with a separate lift-off lid. Choose the lid depth for a full or partial telescope lid.",
+  "dimensions": [
+    { "key": "L", "label": "Length", "min": 40, "max": 500, "default": 200 },
+    { "key": "W", "label": "Width", "min": 40, "max": 400, "default": 150 },
+    { "key": "H", "label": "Height", "min": 20, "max": 300, "default": 80 },
+    { "key": "D", "label": "Lid Depth", "min": 10, "max": 300, "default": 30, "help": "Height of the lid walls" }
+  ],
+  "constraints": [
+    { "expr": "D <= H + 4", "message": "Lid depth cannot exceed the box height." }
+  ],
+  "vars": {
+    "c": 2,
+    "tab": "min(15, W * 0.3, H * 0.8)",
+    "ltab": "min(15, W * 0.3, D * 0.8)"
+  },
+  "pieces": [
+    { "id": "base", "label": "Base", "root": "base-front" },
+    {
+      "id": "lid",
+      "label": "Lid",
+      "root": "lid-front",
+      "place": { "position": ["-c", "c", "c"] },
+      "openPlace": { "position": ["-c", "c + D + H * 0.55 + 20", "c + W * 0.1"], "rotation": [-12, 0, 0] }
+    }
+  ],
+  "panels": [
+    { "id": "base-front", "label": "Base Front", "face": "front", "w": "L", "h": "H" },
+    { "id": "base-bottom", "label": "Bottom", "face": "bottom", "parent": "base-front", "edge": "bottom", "depth": "W" },
+    { "id": "base-back", "label": "Base Back", "face": "back", "parent": "base-bottom", "edge": "bottom", "depth": "H" },
+    { "id": "base-left", "label": "Base Left", "face": "left", "parent": "base-bottom", "edge": "left", "depth": "H" },
+    { "id": "base-right", "label": "Base Right", "face": "right", "parent": "base-bottom", "edge": "right", "depth": "H" },
+    { "id": "btab-fl", "label": "Corner Tab", "kind": "glue", "parent": "base-front", "edge": "left", "depth": "tab", "shape": { "inset": [2, "tab * 0.4"] }, "layer": 1 },
+    { "id": "btab-fr", "label": "Corner Tab", "kind": "glue", "parent": "base-front", "edge": "right", "depth": "tab", "shape": { "inset": [2, "tab * 0.4"] }, "layer": 1 },
+    { "id": "btab-bl", "label": "Corner Tab", "kind": "glue", "parent": "base-back", "edge": "left", "depth": "tab", "shape": { "inset": ["tab * 0.4", 2] }, "layer": 1 },
+    { "id": "btab-br", "label": "Corner Tab", "kind": "glue", "parent": "base-back", "edge": "right", "depth": "tab", "shape": { "inset": ["tab * 0.4", 2] }, "layer": 1 },
+    { "id": "lid-front", "label": "Lid Front", "w": "L + 2 * c", "h": "D" },
+    { "id": "lid-top", "label": "Lid Top", "face": "top", "parent": "lid-front", "edge": "top", "depth": "W + 2 * c" },
+    { "id": "lid-back", "label": "Lid Back", "parent": "lid-top", "edge": "top", "depth": "D" },
+    { "id": "lid-left", "label": "Lid Left", "parent": "lid-top", "edge": "left", "depth": "D" },
+    { "id": "lid-right", "label": "Lid Right", "parent": "lid-top", "edge": "right", "depth": "D" },
+    { "id": "ltab-fl", "label": "Corner Tab", "kind": "glue", "parent": "lid-front", "edge": "left", "depth": "ltab", "shape": { "inset": ["ltab * 0.4", 2] }, "layer": 1 },
+    { "id": "ltab-fr", "label": "Corner Tab", "kind": "glue", "parent": "lid-front", "edge": "right", "depth": "ltab", "shape": { "inset": ["ltab * 0.4", 2] }, "layer": 1 },
+    { "id": "ltab-bl", "label": "Corner Tab", "kind": "glue", "parent": "lid-back", "edge": "left", "depth": "ltab", "shape": { "inset": [2, "ltab * 0.4"] }, "layer": 1 },
+    { "id": "ltab-br", "label": "Corner Tab", "kind": "glue", "parent": "lid-back", "edge": "right", "depth": "ltab", "shape": { "inset": [2, "ltab * 0.4"] }, "layer": 1 }
+  ],
+  "standardSizes": [
+    { "id": "tp-s", "label": "Small – 120 × 120 × 50 mm", "dims": { "L": 120, "W": 120, "H": 50, "D": 25 } },
+    { "id": "tp-m", "label": "Medium – 200 × 150 × 80 mm", "dims": { "L": 200, "W": 150, "H": 80, "D": 30 } },
+    { "id": "tp-l", "label": "Large – 300 × 250 × 100 mm", "dims": { "L": 300, "W": 250, "H": 100, "D": 40 } },
+    { "id": "tp-full", "label": "Full telescope – 200 × 150 × 80 mm", "dims": { "L": 200, "W": 150, "H": 80, "D": 80 } }
+  ]
+}

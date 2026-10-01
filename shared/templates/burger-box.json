@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "id": "burger-box",
+  "name": "Burger Box",
+  "description": "Clamshell food box with flared walls: a tapered base and a matching lid hinged at the back, with a front locking tab.",
+  "dimensions": [
+    { "key": "L", "label": "Length", "min": 80, "max": 400, "default": 150, "help": "Widest size, where base and lid meet" },
+    { "key": "W", "label": "Width", "min": 80, "max": 400, "default": 150, "help": "Widest size, where base and lid meet" },
+    { "key": "H", "label": "Height", "min": 50, "max": 250, "default": 90, "help": "Closed height (base + lid)" }
+  ],
+  "constraints": [
+    { "expr": "Lb >= 40 && Wb >= 40", "message": "The base is too small for this height. Increase the length/width or reduce the height." },
+    { "expr": "Lt >= 40 && Wt >= 40", "message": "The lid top is too small for this height. Increase the length/width or reduce the height." }
+  ],
+  "vars": {
+    "a": 12,
+    "c": 1.5,
+    "hb": "H * 0.45",
+    "hl": "H - hb",
+    "sb": "hb / cos(a)",
+    "sl": "hl / cos(a)",
+    "Lb": "L - 2 * hb * tan(a)",
+    "Wb": "W - 2 * hb * tan(a)",
+    "Lt": "L + 2 * c - 2 * hl * tan(a)",
+    "Wt": "W + 2 * c - 2 * hl * tan(a)",
+    "flareB": "sb * sin(a)",
+    "flareL": "sl * sin(a)",
+    "lock": "min(L * 0.28, 60)",
+    "lockD": "min(hb * 0.35, 16)"
+  },
+  "pieces": [
+    { "id": "clamshell", "label": "Clamshell", "root": "bottom", "place": { "position": [0, 0, 0], "rotation": [90, 0, 0] } }
+  ],
+  "panels": [
+    { "id": "bottom", "label": "Bottom", "face": "bottom", "w": "Lb", "h": "Wb" },
+    { "id": "front", "label": "Base Front", "face": "front", "parent": "bottom", "edge": "top", "depth": "sb", "shape": { "inset": "-flareB" }, "fold": "90 - a" },
+    { "id": "back", "label": "Base Back", "face": "back", "parent": "bottom", "edge": "bottom", "depth": "sb", "shape": { "inset": "-flareB" }, "fold": "90 - a" },
+    { "id": "left", "label": "Base Left", "face": "left", "parent": "bottom", "edge": "left", "depth": "sb", "shape": { "inset": "-flareB" }, "fold": "90 - a" },
+    { "id": "right", "label": "Base Right", "face": "right", "parent": "bottom", "edge": "right", "depth": "sb", "shape": { "inset": "-flareB" }, "fold": "90 - a" },
+    { "id": "lid-back", "label": "Lid Back", "parent": "back", "edge": "bottom", "length": "L + 2 * c", "align": "center", "depth": "sl", "shape": { "inset": "flareL" }, "fold": "2 * a", "openFold": "2 * a - 110" },
+    { "id": "top", "label": "Lid Top", "face": "top", "parent": "lid-back", "edge": "bottom", "length": "Lt", "align": "center", "depth": "Wt", "fold": "90 - a" },
+    { "id": "lid-front", "label": "Lid Front", "parent": "top", "edge": "bottom", "depth": "sl", "shape": { "inset": "-flareL" }, "fold": "90 - a" },
+    { "id": "lid-left", "label": "Lid Left", "parent": "top", "edge": "left", "depth": "sl", "shape": { "inset": "-flareL" }, "fold": "90 - a" },
+    { "id": "lid-right", "label": "Lid Right", "parent": "top", "edge": "right", "depth": "sl", "shape": { "inset": "-flareL" }, "fold": "90 - a" },
+    { "id": "lock", "label": "Lock Tab", "kind": "tuck", "parent": "lid-front", "edge": "bottom", "length": "lock", "align": "center", "depth": "lockD", "shape": { "inset": 3, "radius": 4 }, "fold": "2 * a", "layer": -0.6 }
+  ],
+  "standardSizes": [
+    { "id": "burger-s", "label": "Small – 110 × 110 × 70 mm", "dims": { "L": 110, "W": 110, "H": 70 } },
+    { "id": "burger-m", "label": "Regular – 150 × 150 × 90 mm", "dims": { "L": 150, "W": 150, "H": 90 } },
+    { "id": "burger-l", "label": "Large – 180 × 180 × 100 mm", "dims": { "L": 180, "W": 180, "H": 100 } },
+    { "id": "burger-meal", "label": "Meal – 230 × 180 × 90 mm", "dims": { "L": 230, "W": 180, "H": 90 } }
+  ]
+}

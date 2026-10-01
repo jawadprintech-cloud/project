@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "reverse-tuck-end",
+  "name": "Reverse Tuck End Box",
+  "description": "Folding carton with the top tuck on the back panel and the bottom tuck on the front panel. Ideal for cosmetics, supplements and retail products.",
+  "dimensions": [
+    { "key": "L", "label": "Length", "min": 20, "max": 500, "default": 90, "help": "Front panel width" },
+    { "key": "W", "label": "Width", "min": 15, "max": 350, "default": 60, "help": "Side panel width (depth)" },
+    { "key": "H", "label": "Height", "min": 20, "max": 600, "default": 150 }
+  ],
+  "constraints": [
+    { "expr": "W <= L * 2.5", "message": "Width should not be more than 2.5 × the length for a tuck end box." }
+  ],
+  "vars": {
+    "glue": "clamp(W * 0.3, 12, 20)",
+    "tuck": "clamp(W * 0.35, 12, 30)",
+    "dust": "min(L * 0.45, max(W * 0.6, 12))"
+  },
+  "pieces": [{ "id": "carton", "label": "Carton", "root": "front" }],
+  "panels": [
+    { "id": "front", "label": "Front", "face": "front", "w": "L", "h": "H" },
+    { "id": "right", "label": "Right Side", "face": "right", "parent": "front", "edge": "right", "depth": "W" },
+    { "id": "back", "label": "Back", "face": "back", "parent": "right", "edge": "right", "depth": "L" },
+    { "id": "left", "label": "Left Side", "face": "left", "parent": "back", "edge": "right", "depth": "W" },
+    { "id": "glue", "label": "Glue Flap", "kind": "glue", "parent": "front", "edge": "left", "depth": "glue", "shape": { "inset": "glue * 0.35" }, "layer": 0.8 },
+    { "id": "top", "label": "Top", "face": "top", "parent": "back", "edge": "top", "depth": "W", "openFold": -15 },
+    { "id": "top-tuck", "label": "Top Tuck Flap", "kind": "tuck", "parent": "top", "edge": "top", "depth": "tuck", "shape": { "inset": 2, "radius": "min(tuck * 0.7, L * 0.25)" }, "layer": 1, "openFold": 40 },
+    { "id": "top-dust-r", "label": "Dust Flap", "kind": "dust", "parent": "right", "edge": "top", "depth": "dust", "shape": { "inset": ["dust * 0.25", 2], "radius": 3 }, "layer": 1, "openFold": 0 },
+    { "id": "top-dust-l", "label": "Dust Flap", "kind": "dust", "parent": "left", "edge": "top", "depth": "dust", "shape": { "inset": [2, "dust * 0.25"], "radius": 3 }, "layer": 1, "openFold": 0 },
+    { "id": "bottom", "label": "Bottom", "face": "bottom", "parent": "front", "edge": "bottom", "depth": "W" },
+    { "id": "bottom-tuck", "label": "Bottom Tuck Flap", "kind": "tuck", "parent": "bottom", "edge": "bottom", "depth": "tuck", "shape": { "inset": 2, "radius": "min(tuck * 0.7, L * 0.25)" }, "layer": 1 },
+    { "id": "bottom-dust-r", "label": "Dust Flap", "kind": "dust", "parent": "right", "edge": "bottom", "depth": "dust", "shape": { "inset": ["dust * 0.25", 2], "radius": 3 }, "layer": 1 },
+    { "id": "bottom-dust-l", "label": "Dust Flap", "kind": "dust", "parent": "left", "edge": "bottom", "depth": "dust", "shape": { "inset": [2, "dust * 0.25"], "radius": 3 }, "layer": 1 }
+  ],
+  "standardSizes": [
+    { "id": "rte-s", "label": "Small – 50 × 50 × 100 mm", "dims": { "L": 50, "W": 50, "H": 100 } },
+    { "id": "rte-m", "label": "Medium – 90 × 60 × 150 mm", "dims": { "L": 90, "W": 60, "H": 150 } },
+    { "id": "rte-l", "label": "Large – 120 × 80 × 200 mm", "dims": { "L": 120, "W": 80, "H": 200 } },
+    { "id": "rte-bottle", "label": "Bottle – 70 × 70 × 220 mm", "dims": { "L": 70, "W": 70, "H": 220 } }
+  ]
+}

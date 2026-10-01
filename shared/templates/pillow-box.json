@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "id": "pillow-box",
+  "name": "Pillow Box",
+  "description": "Curved-score pillow pack that closes with tucked ends. Popular for gifts, jewellery and favours.",
+  "dimensions": [
+    { "key": "L", "label": "Length", "min": 60, "max": 400, "default": 180 },
+    { "key": "W", "label": "Width", "min": 40, "max": 300, "default": 100 },
+    { "key": "H", "label": "Thickness", "min": 10, "max": 120, "default": 35, "help": "Depth at the centre" }
+  ],
+  "constraints": [
+    { "expr": "H <= W * 0.6", "message": "Thickness should be at most 60% of the width." },
+    { "expr": "H <= L * 0.35", "message": "Thickness is too large for this length." }
+  ],
+  "vars": {
+    "score": "H * 0.45",
+    "flap": "clamp(H * 0.7, 8, W * 0.3)",
+    "glue": 15
+  },
+  "pieces": [{ "id": "pillow", "label": "Pillow", "root": "front" }],
+  "panels": [
+    { "id": "front", "label": "Front", "face": "front", "w": "L", "h": "W" },
+    { "id": "back", "label": "Back", "face": "back", "parent": "front", "edge": "top", "depth": "W", "fold": 180 },
+    { "id": "glue", "label": "Glue Flap", "kind": "glue", "parent": "back", "edge": "top", "depth": "glue", "shape": { "inset": 6 }, "fold": 180, "layer": 0.8 },
+    { "id": "end-fl", "label": "End Flap", "kind": "tuck", "parent": "front", "edge": "left", "depth": 0.5, "shape": { "hingeSag": "score", "farSag": "flap" }, "fold": 180, "layer": -0.6 },
+    { "id": "end-fr", "label": "End Flap", "kind": "tuck", "parent": "front", "edge": "right", "depth": 0.5, "shape": { "hingeSag": "score", "farSag": "flap" }, "fold": 180, "layer": -0.6 },
+    { "id": "end-bl", "label": "End Flap", "kind": "tuck", "parent": "back", "edge": "left", "depth": 0.5, "shape": { "hingeSag": "score", "farSag": "flap" }, "fold": 180, "layer": -0.6 },
+    { "id": "end-br", "label": "End Flap", "kind": "tuck", "parent": "back", "edge": "right", "depth": 0.5, "shape": { "hingeSag": "score", "farSag": "flap" }, "fold": 180, "layer": -0.6 }
+  ],
+  "deform": { "type": "pillow", "length": "L", "width": "W", "thickness": "H" },
+  "standardSizes": [
+    { "id": "pillow-s", "label": "Small – 120 × 80 × 25 mm", "dims": { "L": 120, "W": 80, "H": 25 } },
+    { "id": "pillow-m", "label": "Medium – 180 × 100 × 35 mm", "dims": { "L": 180, "W": 100, "H": 35 } },
+    { "id": "pillow-l", "label": "Large – 250 × 150 × 50 mm", "dims": { "L": 250, "W": 150, "H": 50 } }
+  ]
+}

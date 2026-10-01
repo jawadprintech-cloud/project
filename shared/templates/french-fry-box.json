@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "id": "french-fry-box",
+  "name": "French Fry Box",
+  "description": "Open-top scoop carton with a lowered, curved front and a tall rounded back.",
+  "dimensions": [
+    { "key": "L", "label": "Length", "min": 40, "max": 250, "default": 90, "help": "Front width" },
+    { "key": "W", "label": "Width", "min": 20, "max": 150, "default": 45, "help": "Depth" },
+    { "key": "H", "label": "Height", "min": 50, "max": 300, "default": 120, "help": "Back height" }
+  ],
+  "constraints": [
+    { "expr": "W <= L", "message": "Depth cannot exceed the front width for a fry box." }
+  ],
+  "vars": {
+    "hf": "H * 0.72",
+    "scoop": "min(hf * 0.22, L * 0.2)",
+    "tab": "min(12, W * 0.4)"
+  },
+  "pieces": [
+    { "id": "carton", "label": "Carton", "root": "bottom", "place": { "position": [0, 0, 0], "rotation": [90, 0, 0] } }
+  ],
+  "panels": [
+    { "id": "bottom", "label": "Bottom", "face": "bottom", "w": "L", "h": "W" },
+    { "id": "front", "label": "Front", "face": "front", "parent": "bottom", "edge": "top", "depth": "hf", "shape": { "farSag": "-scoop" } },
+    { "id": "back", "label": "Back", "face": "back", "parent": "bottom", "edge": "bottom", "depth": "H", "shape": { "radius": "min(18, L * 0.18)" } },
+    { "id": "left", "label": "Left Side", "face": "left", "parent": "bottom", "edge": "left", "depth": "H", "shape": { "points": [[0, 0], ["len", 0], ["len", "H"], [0, "hf"]] } },
+    { "id": "right", "label": "Right Side", "face": "right", "parent": "bottom", "edge": "right", "depth": "H", "shape": { "points": [[0, 0], ["len", 0], ["len", "H"], [0, "hf"]] } },
+    { "id": "tab-fl", "label": "Glue Tab", "kind": "glue", "parent": "front", "edge": "left", "depth": "tab", "length": "hf - 5", "align": "end", "shape": { "inset": [3, 3] }, "layer": 1 },
+    { "id": "tab-fr", "label": "Glue Tab", "kind": "glue", "parent": "front", "edge": "right", "depth": "tab", "length": "hf - 5", "align": "end", "shape": { "inset": [3, 3] }, "layer": 1 },
+    { "id": "tab-bl", "label": "Glue Tab", "kind": "glue", "parent": "back", "edge": "left", "depth": "tab", "length": "H - 20", "shape": { "inset": [3, 3] }, "layer": 1 },
+    { "id": "tab-br", "label": "Glue Tab", "kind": "glue", "parent": "back", "edge": "right", "depth": "tab", "length": "H - 20", "shape": { "inset": [3, 3] }, "layer": 1 }
+  ],
+  "standardSizes": [
+    { "id": "fry-s", "label": "Small – 80 × 40 × 100 mm", "dims": { "L": 80, "W": 40, "H": 100 } },
+    { "id": "fry-m", "label": "Medium – 90 × 45 × 120 mm", "dims": { "L": 90, "W": 45, "H": 120 } },
+    { "id": "fry-l", "label": "Large – 100 × 55 × 140 mm", "dims": { "L": 100, "W": 55, "H": 140 } }
+  ]
+}

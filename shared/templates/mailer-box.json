@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "id": "mailer-box",
+  "name": "Mailer Box",
+  "description": "Roll-end front-tuck mailer with double side walls and a hinged lid. The go-to box for e-commerce and subscription boxes.",
+  "dimensions": [
+    { "key": "L", "label": "Length", "min": 60, "max": 600, "default": 250, "help": "Front width" },
+    { "key": "W", "label": "Width", "min": 40, "max": 450, "default": 180, "help": "Front-to-back depth" },
+    { "key": "H", "label": "Height", "min": 15, "max": 200, "default": 60 }
+  ],
+  "constraints": [
+    { "expr": "H <= W", "message": "Height cannot exceed the width for a mailer box." },
+    { "expr": "H <= L / 1.5", "message": "Height is too large for this length." }
+  ],
+  "vars": {
+    "inner": "H - 2",
+    "tuck": "H - 3",
+    "dust": "min(W * 0.4, 70)"
+  },
+  "pieces": [{ "id": "mailer", "label": "Mailer", "root": "front" }],
+  "panels": [
+    { "id": "front", "label": "Front", "face": "front", "w": "L", "h": "H" },
+    { "id": "front-inner", "label": "Front Inner", "kind": "inner", "parent": "front", "edge": "top", "depth": "inner", "fold": 180, "layer": -1.5 },
+    { "id": "bottom", "label": "Bottom", "face": "bottom", "parent": "front", "edge": "bottom", "depth": "W" },
+    { "id": "left", "label": "Left Side", "face": "left", "parent": "bottom", "edge": "left", "depth": "H" },
+    { "id": "left-inner", "label": "Left Inner", "kind": "inner", "parent": "left", "edge": "left", "depth": "inner", "fold": 180, "layer": -1.5 },
+    { "id": "right", "label": "Right Side", "face": "right", "parent": "bottom", "edge": "right", "depth": "H" },
+    { "id": "right-inner", "label": "Right Inner", "kind": "inner", "parent": "right", "edge": "right", "depth": "inner", "fold": 180, "layer": -1.5 },
+    { "id": "back", "label": "Back", "face": "back", "parent": "bottom", "edge": "bottom", "depth": "H" },
+    { "id": "dust-l", "label": "Dust Flap", "kind": "dust", "parent": "back", "edge": "left", "depth": "dust", "shape": { "inset": [2, "dust * 0.35"], "radius": 4 }, "layer": 0.8 },
+    { "id": "dust-r", "label": "Dust Flap", "kind": "dust", "parent": "back", "edge": "right", "depth": "dust", "shape": { "inset": [2, "dust * 0.35"], "radius": 4 }, "layer": 0.8 },
+    { "id": "lid", "label": "Lid (Top)", "face": "top", "parent": "back", "edge": "bottom", "depth": "W", "openFold": -20 },
+    { "id": "lid-tuck", "label": "Lid Tuck", "kind": "tuck", "parent": "lid", "edge": "bottom", "depth": "tuck", "shape": { "inset": 3, "radius": "min(12, tuck * 0.5)" }, "layer": 3 },
+    { "id": "ear-l", "label": "Lid Ear", "kind": "dust", "parent": "lid", "edge": "left", "depth": "tuck", "length": "W - 8", "align": "end", "offset": 4, "shape": { "inset": [4, "tuck * 0.35"], "radius": 4 }, "layer": 3 },
+    { "id": "ear-r", "label": "Lid Ear", "kind": "dust", "parent": "lid", "edge": "right", "depth": "tuck", "length": "W - 8", "align": "end", "offset": 4, "shape": { "inset": [4, "tuck * 0.35"], "radius": 4 }, "layer": 3 }
+  ],
+  "standardSizes": [
+    { "id": "mailer-xs", "label": "Extra Small – 150 × 100 × 40 mm", "dims": { "L": 150, "W": 100, "H": 40 } },
+    { "id": "mailer-s", "label": "Small – 200 × 150 × 50 mm", "dims": { "L": 200, "W": 150, "H": 50 } },
+    { "id": "mailer-m", "label": "Medium – 250 × 180 × 60 mm", "dims": { "L": 250, "W": 180, "H": 60 } },
+    { "id": "mailer-l", "label": "Large – 300 × 230 × 80 mm", "dims": { "L": 300, "W": 230, "H": 80 } },
+    { "id": "mailer-xl", "label": "Extra Large – 400 × 300 × 100 mm", "dims": { "L": 400, "W": 300, "H": 100 } }
+  ]
+}
