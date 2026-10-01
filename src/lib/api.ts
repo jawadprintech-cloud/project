@@ -1,9 +1,11 @@
 import type { ResolvedCatalog } from "../../shared/catalog";
 import type { Design } from "../../shared/design";
+import { uploadPresigned } from "@vercel/blob/client";
 import { demoApi, demoAssets } from "./demo";
 
 /** Static demo build: everything runs in the browser, no server. */
 export const DEMO = import.meta.env.VITE_DEMO === "1";
+const BLOB_UPLOADS = import.meta.env.VITE_BLOB_UPLOADS === "1";
 
 export class ApiError extends Error {
   constructor(
@@ -41,10 +43,25 @@ const json = (method: string, body: unknown, headers: Record<string, string> = {
   body: JSON.stringify(body),
 });
 
+const newAssetId = () => Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
+
 const serverApi = {
   catalog: () => request<ResolvedCatalog>("/api/catalog"),
-  uploadAsset: (blob: Blob, fileName: string, kind: "upload" | "generated" = "upload") =>
-    request<{ id: string; url: string; mime: string; size: number }>("/api/assets", {
+  uploadAsset: async (blob: Blob, fileName: string, kind: "upload" | "generated" = "upload") => {
+    if (BLOB_UPLOADS) {
+      const id = newAssetId();
+      const mime = blob.type || "application/octet-stream";
+      const pathname = `assets/${id}`;
+      await uploadPresigned(pathname, blob, {
+        access: "private",
+        handleUploadUrl: "/api/assets/upload",
+        contentType: mime,
+        multipart: blob.size > 100_000_000,
+        clientPayload: JSON.stringify({ id, fileName, kind, mime }),
+      });
+      return request<{ id: string; url: string; mime: string; size: number }>("/api/assets/register", json("POST", { id, pathname, fileName, kind, mime }));
+    }
+    return request<{ id: string; url: string; mime: string; size: number }>("/api/assets", {
       method: "POST",
       headers: {
         "Content-Type": blob.type || "application/octet-stream",
@@ -52,7 +69,8 @@ const serverApi = {
         "X-Asset-Kind": kind,
       },
       body: blob,
-    }),
+    });
+  },
   createProject: (design: Design) => request<{ id: string; updatedAt: string }>("/api/projects", json("POST", { design })),
   saveProject: (id: string, design: Design) => request<{ id: string; updatedAt: string }>(`/api/projects/${id}`, json("PUT", { design })),
   loadProject: (id: string) => request<{ id: string; design: Design; updatedAt: string }>(`/api/projects/${id}`),
