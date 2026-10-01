@@ -3,7 +3,7 @@ import { handleUploadPresigned, type HandleUploadPresignedBody } from "@vercel/b
 import type { IncomingHttpHeaders, IncomingMessage, ServerResponse } from "node:http";
 
 type UploadRequest = IncomingMessage & { body?: unknown };
-type UploadClientPayload = { id?: string; fileName?: string; kind?: string; mime?: string };
+type UploadClientPayload = { id: string; fileName: string; kind: "upload" | "generated"; mime: string };
 
 const recentRequests = new Map<string, { count: number; resetAt: number }>();
 const GENERATED_TYPES = new Set(["image/png", "image/jpeg", "image/svg+xml", "application/json"]);
@@ -48,7 +48,7 @@ function parseClientPayload(value: string | null): UploadClientPayload {
   if (payload.kind !== "upload" && payload.kind !== "generated") throw new Error("Invalid upload kind.");
   if (typeof payload.fileName !== "string" || payload.fileName.length > 255) throw new Error("Invalid file name.");
   if (typeof payload.mime !== "string" || payload.mime.length > 64) throw new Error("Invalid file type.");
-  return payload;
+  return payload as UploadClientPayload;
 }
 
 export default async function handler(req: UploadRequest, res: ServerResponse) {
