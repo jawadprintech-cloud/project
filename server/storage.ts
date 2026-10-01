@@ -105,7 +105,7 @@ export class Storage {
 
   async inspectBlob(pathname: string): Promise<{ size: number; contentType: string; prefix: Buffer } | null> {
     if (!this.query) return null;
-    const info = await head(pathname, { access: "private" });
+    const info = await head(pathname);
     const blob = await get(pathname, { access: "private", useCache: false });
     if (!blob?.stream) return null;
     const reader = blob.stream.getReader();
@@ -138,7 +138,20 @@ export class Storage {
     if (!this.query) return createReadStream(this.file("assets", id));
     if (!meta.blobPath) return null;
     const blob = await get(meta.blobPath, { access: "private" });
-    return blob?.stream ? Readable.fromWeb(blob.stream as ReadableStream<Uint8Array>) : null;
+    if (!blob?.stream) return null;
+    const stream = blob.stream;
+    return Readable.from((async function* () {
+      const reader = stream.getReader();
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) return;
+          if (value) yield Buffer.from(value);
+        }
+      } finally {
+        reader.releaseLock();
+      }
+    })());
   }
 
   async assetMeta(id: string): Promise<AssetMeta | null> {
